@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~results_template.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ###_* load libraries
 library(reshape)
 library(fields)

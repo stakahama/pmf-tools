@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~postprocess.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ## input:
 source("userinputs.r")
 patt <- ".+\\_([0-9]{3})\\.pdf"

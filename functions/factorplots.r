@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~factorplots.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ###_* input
 
 allf <- file.info(list.files("."))

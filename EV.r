@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~EV.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ## explained variance
 
 ###_* import

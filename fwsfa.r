@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~fwsfa.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 file1 <- "matrix.dat"
 file2 <- "wavenumbers.dat"
 #########################################

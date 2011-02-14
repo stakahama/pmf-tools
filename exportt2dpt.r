@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~exportt2dpt.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ## User inputs
 source("userinputs.r")
 dptpath <- "dpt"

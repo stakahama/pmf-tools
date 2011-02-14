@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~userinputs.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ## CalNex
 FOLDER <- "runs/CalNex1"
 nFactors <- 2

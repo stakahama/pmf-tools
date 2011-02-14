@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~makematrix.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ## setwd("~/Desktop/pmf_nt")
 ftirpath <- "../CalNex/ftir"
 pjname <- "CalNex"

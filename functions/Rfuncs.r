@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~Rfuncs.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 ## modify INI file to adjust parameters
 ## nrow, ncol, nFactors, FPEAK
 

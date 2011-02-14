@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~converg.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 allfiles <- list.files(".",patt="output\\.txt",rec=TRUE,full=TRUE)
 
 mtime <-

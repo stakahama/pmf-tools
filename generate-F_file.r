@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~generate-F_file.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 source("userinputs.r")
 ffiles <- list.files(FOLDER,"F_FACTOR.TXT",recursive=TRUE,full=TRUE)
 

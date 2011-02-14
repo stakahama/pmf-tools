@@ -1,3 +1,12 @@
+####################
+## PMF execution and postprocessing program
+## ~subset.r~
+## $Rev$
+## Feb. 2011
+## Satoshi Takahama (stakahama@ucsd.edu)
+####################
+
+
 
 datapath <- "data"
 mat <- as.matrix(read.table(file.path(datapath,"matrix.dat")))
