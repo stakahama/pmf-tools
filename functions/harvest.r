@@ -7,20 +7,20 @@
 ####################
 
 
-###_ . harvest PMF matrices
+## harvest PMF matrices
 
 funcall <- function(FUN,...) FUN(...)
 
-getsoln <- function(FOLDER,solution) {
+getsoln <- function(FOLDER,solution,xvariables) {
   path <- unique(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),solution)))
   g <- funcall(function(p) {
-    samples <- scan(file.path(dirname(p),"samples.txt"),"",quiet=TRUE)
+    samples <- readLines(file.path(dirname(p),"samples.txt"))
     g <- as.matrix(read.table(file.path(p,"G_FACTOR.TXT")))
     `dimnames<-`(g,list(samples,
                         sprintf("%s-%02d",basename(p),1:ncol(g))))
   },path)
   f <- funcall(function(p) {
-    wn <- scan(file.path(dirname(p),"wavenumbers.txt"),"",quiet=TRUE)
+    wn <- readLines(file.path(dirname(p),xvariables))
     f <- matrix(scan(file.path(p,"F_FACTOR.TXT"),quiet=TRUE),ncol=length(wn),
                 byrow=TRUE)
     `dimnames<-`(f,list(sprintf("%s-%02d",basename(p),1:nrow(f)),wn))

@@ -8,11 +8,12 @@
 
 
 ## CalNex
-FOLDER <- "runs/CalNex1"
-nFactors <- 2
-FPEAK <- seq(-1.2,1.2,.6)
+FOLDER <- "runs/ACSM01"
+nFactors <- 2:8
+FPEAK <- seq(-1.2,1.2,.4)
 Seeds <- c(1,10,100)
-newsim <- FALSE
+newsim <- TRUE
+xvariables <- "amus.txt"
 
 ## FOLDER <- "runs/test"
 ## nFactors <- 2
