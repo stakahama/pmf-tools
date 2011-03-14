@@ -8,10 +8,10 @@
 
 
 ## CalNex
-FOLDER <- "runs/ACSM01"
-nFactors <- 2:8
-FPEAK <- seq(-1.2,1.2,.4)
-Seeds <- c(1,10,100)
+FOLDER <- "runs/ACSM02"
+nFactors <- c(2,8)
+FPEAK <- round(seq(-1.2,1.2,1.2),2)
+Seeds <- c(1,100)
 newsim <- TRUE
 xvariables <- "amus.txt"
 

@@ -44,15 +44,26 @@ sdvgt0 <- function() {
   acsm_time <<- acsm_time[samples]
   ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,]
 }
+specialcase <- function() { ## --- june only ---
+  samples <- acsm_time >= "06/01/10"
+  select <- amus > min(amus)
+  ## global assignment    
+  org_specs <<- org_specs[samples,select]
+  orgspecs_err <<- orgspecs_err[samples,select]
+  acsm_time <<- acsm_time[samples]
+  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  amus <- amus[select]
+}
 
 ## apply functions
 
 validsamples()
 sdvgt0()
+specialcase()
 
 ## extract
 
-runpath <- "runs/ACSM01"
+runpath <- "runs/ACSM02"
 dir.create(runpath)
 write.table(formatC(org_specs,format="g"),
             file=file.path(runpath,"MATRIX.DAT"),sep="\t",
