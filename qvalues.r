@@ -17,7 +17,7 @@ dir.create(file.path(FOLDER,"Allplots"))
 ###_* read dim(X), Q-values
 
 ###_ . X
-Xmat <- read.table(file.path(FOLDER,"matrix.dat"))
+Xmat <- read.table(file.path(FOLDER,"MATRIX.DAT"))
 eqm <- function(p) prod(dim(Xmat)) - p*(sum(dim(Xmat)))
 
 ###_ . Q-values
@@ -39,11 +39,14 @@ panel <- function(...) {
   panel.abline(h=0,col=8)
   panel.xyplot(...)
 }
-xout <- xyplot(`Q-ratio`~FPEAK | nFactors, groups=Seed,data=simgrid,
-               panel=panel,scales=list(y=list(relation="sliced")),
-               type="o",auto=list(space="right",title="Seed",cex.title=1),
-               ylab=expression(Q/Q[expected]),
-               as.table=TRUE)
+qvalplot <- function(yaxis.relation="sliced") 
+  xyplot(`Q-ratio`~FPEAK | nFactors, groups=Seed,data=simgrid,
+         panel=panel,scales=list(y=list(relation=yaxis.relation)),
+         type="o",auto=list(space="right",title="Seed",cex.title=1),
+         ylab=expression(Q/Q[expected]),
+         as.table=TRUE)
+xout <- tryCatch(qvalplot("sliced"),error=function(e)
+                 qvalplot("same"))
 
 pdf(file.path(FOLDER,"Allplots","Qvalues-FPEAK.pdf"),width=8,height=5)
 ## print(update(xout,scales=list(y=list(relation="same"))))
@@ -53,7 +56,7 @@ dev.off()
 panel <- function(x,y,...,pch,groups,subscripts) {
   panel.points(x,y,pch=pch[subscripts],
                col=trellis.par.get("superpose.symbol")$col[groups[subscripts]])
-  panel.lines(smooth.spline(x,y))
+  tryCatch(panel.lines(smooth.spline(x,y)),error=function(e) panel.lmline(x,y))
 }
 
 mykey <- with(simgrid,{
@@ -63,6 +66,16 @@ mykey <- with(simgrid,{
   list(space="right",text=dfr["lab"],points=dfr[c("col","pch")])
 })
 
+mykey <- with(simgrid,{
+  p <- trellis.par.get("superpose.symbol")
+  lab <- do.call(paste,c(sep=",",rev(expand.grid(levels(Seed),levels(FPEAK)))))
+  pp <- rev(expand.grid(col=p$col[1:nlevels(Seed)],pch=1:nlevels(FPEAK),
+                    stringsAsFactors=FALSE))
+  list(space="right",title="FPEAK,Seed",cex.title=.9,
+       text=list(lab=lab),points=pp)
+})
+
+simgrid$nFactors <- as.integer(as.character(simgrid$nFactors))
 xout <- xyplot(`Q-ratio`~nFactors, groups=Seed,data=simgrid,
                panel=panel,pch=simgrid$FPEAK,
                scales=list(y=list(relation="sliced")),
@@ -73,3 +86,4 @@ xout <- xyplot(`Q-ratio`~nFactors, groups=Seed,data=simgrid,
 pdf(file.path(FOLDER,"Allplots","Qvalues-nFactors.pdf"),width=8,height=5)
 print(xout)
 dev.off()
+

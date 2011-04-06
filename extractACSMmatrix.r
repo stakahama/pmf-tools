@@ -45,25 +45,58 @@ sdvgt0 <- function() {
   ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,]
 }
 specialcase <- function() { ## --- june only ---
-  samples <- acsm_time >= "06/01/10"
+  samples <- acsm_time >= "06/01/10" ##& org_specs[,amus==44] > -.15
   select <- amus > min(amus)
   ## global assignment    
   org_specs <<- org_specs[samples,select]
   orgspecs_err <<- orgspecs_err[samples,select]
   acsm_time <<- acsm_time[samples]
   ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
-  amus <- amus[select]
+  amus <<- amus[select]
+}
+june_nonneg <- function() { ## --- june only ---
+  samples <- acsm_time >= "06/01/10" ##& org_specs[,amus==44] > -.15
+  select <- TRUE
+  ## global assignment    
+  org_specs <<- abs(org_specs[samples,select])
+  orgspecs_err <<- orgspecs_err[samples,select]
+  acsm_time <<- acsm_time[samples]
+  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  amus <<- amus[select]
+}
+june_lowmz <- function() { ## --- june only ---
+  samples <- acsm_time >= "06/01/10" ##& org_specs[,amus==44] > -.15
+  select <- amus < 100
+  ## global assignment    
+  org_specs <<- org_specs[samples,select]
+  orgspecs_err <<- orgspecs_err[samples,select]
+  acsm_time <<- acsm_time[samples]
+  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  amus <<- amus[select]
+}
+june_abslowmz <- function() { ## --- june only ---
+  samples <- acsm_time >= "06/01/10" ##& org_specs[,amus==44] > -.15
+  select <- amus < 100
+  ## global assignment    
+  org_specs <<- abs(org_specs[samples,select])
+  orgspecs_err <<- orgspecs_err[samples,select]
+  acsm_time <<- acsm_time[samples]
+  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  amus <<- amus[select]
 }
 
 ## apply functions
 
 validsamples()
 sdvgt0()
-specialcase()
+## specialcase()
+## june_nonneg()
+## june_lowmz()
+june_abslowmz()
 
 ## extract
 
-runpath <- "runs/ACSM02"
+runpath <- "runs/ACSM07"
 dir.create(runpath)
 write.table(formatC(org_specs,format="g"),
             file=file.path(runpath,"MATRIX.DAT"),sep="\t",

@@ -42,18 +42,18 @@ library(lattice)
 tpars <- trellis.par.get("superpose.symbol")
 
 pdf(file.path(FOLDER,"Allplots","ExplainedVariation-nFactors.pdf"),width=8,height=5)
-par(mar=c(4,4,1,5),mgp=c(2.2,.5,.0))
+par(mar=c(4,4,1,6),mgp=c(2.2,.5,.0))
 with(simgrid,{
-  plot(nFactors,median*100,col=tpars$col[Seed],
-       pch=unclass(FPEAK),
+  col <- tpars$col[1:nlevels(Seed)]
+  pch <- 1:nlevels(FPEAK)
+  plot(nFactors,median*100,col=col[Seed],pch=pch[FPEAK],
        ylim=c(0,100),ylab="Explained Variation (%)")
+  lab <- do.call(paste,c(sep=",",rev(expand.grid(levels(Seed),levels(FPEAK)))))
+  pp <- rev(expand.grid(col=col,pch=pch,stringsAsFactors=FALSE))
   legend(par("usr")[2],par("usr")[4],xjust=0,yjust=1,
-         title="Seed",pch=1,col=tpars$col[1:nlevels(Seed)],
-         levels(Seed),xpd=NA)
-  legend(par("usr")[2],mean(par("usr")[3:4]),xjust=0,yjust=1,
-         title="FPEAK",pch=1:nlevels(FPEAK),col=1,
-         levels(FPEAK),xpd=NA)
+         title="FPEAK,Seed",lab,pch=pp$pch,col=pp$col,xpd=NA)
 })
 ## with(simgrid,arrows(nFactors,min*100,nFactors,max*100,
 ##                     angle=90,col=8,length=.01,code=3))
 dev.off()
+

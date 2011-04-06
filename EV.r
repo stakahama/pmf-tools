@@ -43,8 +43,8 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
   ## read matrices
   dn <- list(samples=readLines(file.path(FOLDER,"samples.txt")),
              wavenumbers=readLines(file.path(FOLDER,xvariables)))
-  mat <- as.matrix(read.table(file.path(FOLDER,"matrix.dat")))
-  stdev <- as.matrix(read.table(file.path(FOLDER,"std_dev.dat")))
+  mat <- as.matrix(read.table(file.path(FOLDER,"MATRIX.DAT")))
+  stdev <- as.matrix(read.table(file.path(FOLDER,"STD_DEV.DAT")))
   dimnames(mat) <- dn
   dimnames(stdev) <- dn
 
@@ -70,5 +70,6 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
 
 runno <- sub(patt,"\\1",list.files(FOLDER,patt))
 invisible(lapply(runno,function(runno,FOLDER)
-                 tryCatch({print(runno);calcEV(runno,FOLDER)},error=function(e) NULL),
+                 tryCatch({print(runno);calcEV(runno,FOLDER)},
+                          error=function(e) {print(sprintf("Error %s",runno));NULL}),
                  FOLDER=FOLDER))
