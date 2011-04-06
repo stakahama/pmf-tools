@@ -104,7 +104,7 @@ write.table(formatC(org_specs,format="g"),
 write.table(formatC(ErrorMatB4DownWeight,format="g"),
             file=file.path(runpath,"STD_DEV.DAT"),sep="\t",
             row.names=FALSE,col.names=FALSE,quote=FALSE)
-write(amus,file.path(runpath,"amus.txt"),ncol=1)
+write(amus,file.path(runpath,"variables.txt"),ncol=1)
 writeLines(format_chron(acsm_time,"%Y-%m-%d %T"),
            file.path(runpath,"samples.txt"))
 

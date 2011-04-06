@@ -12,7 +12,7 @@
 allf <- file.info(list.files("."))
 dnames <- grep(".+\\_[0-9]{3}",rownames(allf)[allf$isdir],value=TRUE)
 simgrid <- read.table("simgrid.txt")
-xval <- scan('wavenumbers.txt',what=0,quiet=TRUE)
+xval <- scan('variables.txt',what=0,quiet=TRUE)
 readF <- with(list(nc=length(xval)),
               function(x) matrix(scan(x,quiet=TRUE),ncol=nc,byrow=TRUE))
 

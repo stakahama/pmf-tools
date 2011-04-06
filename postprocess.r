@@ -21,7 +21,7 @@ try(dir.create("Allplots"),TRUE)
 ## source(file.path(homedir,"functions/results_template.r"))
 ## lapply(c("Qvalues.pdf","Gmedian.pdf"),
 ##        function(x) file.rename(x,file.path("Allplots",x)))
-source(file.path(homedir,"functions/factorplots.r"))
+source(file.path(homedir,"functions/ftir-factorplots.r"))
 setwd("Allplots")
 try({
   projpdf <- list.files(".",patt=patt)

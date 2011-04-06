@@ -42,7 +42,7 @@ ExplainedVariance <- function(G,F,S,E) {
 calcEV <- function(runno,FOLDER,export=TRUE) {
   ## read matrices
   dn <- list(samples=readLines(file.path(FOLDER,"samples.txt")),
-             wavenumbers=readLines(file.path(FOLDER,"variables.txt")))
+             variables=readLines(file.path(FOLDER,"variables.txt")))
   mat <- as.matrix(read.table(file.path(FOLDER,"MATRIX.DAT")))
   stdev <- as.matrix(read.table(file.path(FOLDER,"STD_DEV.DAT")))
   dimnames(mat) <- dn
@@ -70,6 +70,7 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
 
 runno <- sub(patt,"\\1",list.files(FOLDER,patt))
 invisible(lapply(runno,function(runno,FOLDER)
-                 tryCatch({print(runno);calcEV(runno,FOLDER)},
-                          error=function(e) {print(sprintf("Error %s",runno));NULL}),
+                 tryCatch({calcEV(runno,FOLDER);print(runno)},
+                          error=function(e)
+                          {print(sprintf("Error %s",runno));print(e);NULL}),
                  FOLDER=FOLDER))

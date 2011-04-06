@@ -58,4 +58,3 @@ lapply(c("F_FACTOR.TXT","G_FACTOR.TXT","TEMP.TXT","MISC.TXT","PMF2.LOG",
          "MYPMF.INI"),file.remove)
 
 setwd(homedir)
-
