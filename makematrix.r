@@ -41,5 +41,5 @@ write.table(form(mat),file.path(datapath,"matrix.dat"),
             row.names=FALSE,col.names=FALSE,sep="\t",quote=FALSE)
 write.table(form(stdev),file.path(datapath,"std_dev.dat"),
             row.names=FALSE,col.names=FALSE,sep="\t",quote=FALSE)
-writeLines(format(bl[[1,"wavenumber"]][wavenums.use],nsmall=3),file.path(datapath,"wavenumbers.txt"))
+writeLines(format(bl[[1,"wavenumber"]][wavenums.use],nsmall=3),file.path(datapath,"variables.txt"))
 writeLines(rownames(mat),file.path(datapath,"samples.txt"))

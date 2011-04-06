@@ -42,14 +42,14 @@ ExplainedVariance <- function(G,F,S,E) {
 calcEV <- function(runno,FOLDER,export=TRUE) {
   ## read matrices
   dn <- list(samples=readLines(file.path(FOLDER,"samples.txt")),
-             wavenumbers=readLines(file.path(FOLDER,xvariables)))
+             wavenumbers=readLines(file.path(FOLDER,"variables.txt")))
   mat <- as.matrix(read.table(file.path(FOLDER,"MATRIX.DAT")))
   stdev <- as.matrix(read.table(file.path(FOLDER,"STD_DEV.DAT")))
   dimnames(mat) <- dn
   dimnames(stdev) <- dn
 
   ## read solution
-  soln <- getsoln(FOLDER, runno, xvariables)
+  soln <- getsoln(FOLDER, runno)
 
   ## divide by volume (this does not actually make a difference on the explained variance)
   mat[] <- divbyv(mat)

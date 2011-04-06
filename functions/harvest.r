@@ -11,7 +11,7 @@
 
 funcall <- function(FUN,...) FUN(...)
 
-getsoln <- function(FOLDER,solution,xvariables) {
+getsoln <- function(FOLDER,solution) {
   path <- unique(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),solution)))
   g <- funcall(function(p) {
     samples <- readLines(file.path(dirname(p),"samples.txt"))
@@ -20,7 +20,7 @@ getsoln <- function(FOLDER,solution,xvariables) {
                         sprintf("%s-%02d",basename(p),1:ncol(g))))
   },path)
   f <- funcall(function(p) {
-    wn <- readLines(file.path(dirname(p),xvariables))
+    wn <- readLines(file.path(dirname(p),"variables.txt"))
     f <- matrix(scan(file.path(p,"F_FACTOR.TXT"),quiet=TRUE),ncol=length(wn),
                 byrow=TRUE)
     `dimnames<-`(f,list(sprintf("%s-%02d",basename(p),1:nrow(f)),wn))
