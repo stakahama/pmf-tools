@@ -69,8 +69,16 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
 }
 
 runno <- sub(patt,"\\1",list.files(FOLDER,patt))
-invisible(lapply(runno,function(runno,FOLDER)
-                 tryCatch({calcEV(runno,FOLDER);print(runno)},
-                          error=function(e)
-                          {print(sprintf("Error %s",runno));print(e);NULL}),
-                 FOLDER=FOLDER))
+
+for( x in runno ) {
+  if(!newsim &&
+     file.exists(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),x),
+                           "ExplainedVariation.txt"))) next()
+  tryCatch({
+    calcEV(x,FOLDER)
+    print(x)
+  },error=function(e) {
+    print(sprintf("Error %s",x))
+    print(e)
+  })
+}
