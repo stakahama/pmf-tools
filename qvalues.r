@@ -39,12 +39,14 @@ panel <- function(...) {
   panel.abline(h=0,col=8)
   panel.xyplot(...)
 }
-qvalplot <- function(yaxis.relation="sliced") 
+qvalplot <- function(yaxis.relation="sliced")  {
+  simgrid <- simgrid[order(simgrid$FPEAK),]
   xyplot(`Q-ratio`~FPEAK | nFactors, groups=Seed,data=simgrid,
          panel=panel,scales=list(y=list(relation=yaxis.relation)),
          type="o",auto=list(space="right",title="Seed",cex.title=1),
          ylab=expression(Q/Q[expected]),
          as.table=TRUE)
+}
 xout <- tryCatch(qvalplot("sliced"),error=function(e)
                  qvalplot("same"))
 

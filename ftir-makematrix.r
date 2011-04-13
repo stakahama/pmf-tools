@@ -6,7 +6,7 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
-source("ftirinputs.r")
+source("ftir-inputs.r")
 dir.create(datapath)
 
 source("functions/cleaning.r")

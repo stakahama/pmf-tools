@@ -9,6 +9,15 @@
 
 ## explained variance
 
+Arg <- tail(commandArgs(),1)
+if( Arg=="EV.r" || Arg=="1" ) {
+  FILENAME <- "ExplainedVariation.txt"
+  FN <- quote(ExplainedVariation)
+} else {
+  FILENAME <- "ExplainedVariation_unnormalized.txt"
+  FN <- quote(ExplainedVariation_unnormalized)
+}
+
 ###_* import
 source("userinputs.r")
 source("filepaths.r")
@@ -26,8 +35,8 @@ divbyv <-
     })
   }
 
-###_* calculate explained variance
-ExplainedVariance <- function(G,F,S,E) {
+###_* calculate explained variation
+ExplainedVariation <- function(G,F,S,E) {
   num <- Reduce(`+`,Map(function(j)
                         abs(sweep(G,2,F[,j],`*`))/S[,j],
                         1:ncol(F)))
@@ -37,6 +46,19 @@ ExplainedVariance <- function(G,F,S,E) {
                                  1:ncol(G)))+abs(E))/S)
   cbind(num,Resid=res)/den
 }
+
+ExplainedVariation_unnormalized <- function(G,F,S,E) {
+  num <- Reduce(`+`,Map(function(j)
+                        abs(sweep(G,2,F[,j],`*`))/S[,j],
+                        1:ncol(F)))
+  res <- rowSums(abs(E))
+  den <- rowSums((Reduce(`+`,Map(function(h)
+                                 abs(outer(G[,h],F[h,],`*`)),
+                                 1:ncol(G)))+abs(E)))
+  cbind(num,Resid=res)/den
+}
+
+ExplainedVariation <- eval(FN)
 
 ###_* read, apply 
 calcEV <- function(runno,FOLDER,export=TRUE) {
@@ -59,11 +81,11 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
   eij <- mat - with(soln,G %*% F)
 
   ## calculate explained variance
-  evg <- ExplainedVariance(soln$G,soln$F,stdev,eij)
+  evg <- ExplainedVariation(soln$G,soln$F,stdev,eij)
 
   if(export)
     write.table(evg,file=file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),runno),
-                  "ExplainedVariation.txt"),
+                  FILENAME),
             sep="\t",quote=FALSE)
   evg
 }
@@ -73,7 +95,7 @@ runno <- sub(patt,"\\1",list.files(FOLDER,patt))
 for( x in runno ) {
   if(!newsim &&
      file.exists(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),x),
-                           "ExplainedVariation.txt"))) next()
+                           FILENAME))) next()
   tryCatch({
     calcEV(x,FOLDER)
     print(x)

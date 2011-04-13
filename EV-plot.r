@@ -6,6 +6,15 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
+Arg <- tail(commandArgs(),1)
+if( Arg=="EV-plot.r" || Arg=="1" ) {
+  FILENAME <- "ExplainedVariation.txt"
+  OUTFILE <- "ExplainedVariation-nFactors.pdf"
+} else {
+  FILENAME <- "ExplainedVariation_unnormalized.txt"
+  OUTFILE <- "ExplainedVariation_unnormalized-nFactors.pdf"  
+}
+
 ###_* user inputs
 source("userinputs.r")
 
@@ -26,7 +35,7 @@ sumstats <- function(filename) {
   x <- 1-ev$Resid
   c(mean=mean(x),median=median(x),min=min(x),max=max(x))
 }
-evstats <- t(sapply(list.files(FOLDER,"ExplainedVariation.txt",rec=TRUE,full=TRUE),sumstats))
+evstats <- t(sapply(list.files(FOLDER,FILENAME,rec=TRUE,full=TRUE),sumstats))
 rownames(evstats) <- basename(dirname(rownames(evstats)))
 
 ###_ . merge with simgrid
@@ -41,7 +50,7 @@ simgrid$FPEAK <- factor(round(simgrid$FPEAK,2))
 library(lattice)
 tpars <- trellis.par.get("superpose.symbol")
 
-pdf(file.path(FOLDER,"Allplots","ExplainedVariation-nFactors.pdf"),width=8,height=5)
+pdf(file.path(FOLDER,"Allplots",OUTFILE),width=8,height=5)
 par(mar=c(4,4,1,6),mgp=c(2.2,.5,.0))
 with(simgrid,{
   col <- tpars$col[1:nlevels(Seed)]
