@@ -9,8 +9,9 @@
 
 ## explained variance
 
+###_* command-line arguments
 Arg <- tail(commandArgs(),1)
-if( Arg=="EV.r" || Arg=="1" ) {
+if( Arg=="--args" || Arg=="1" ) {
   FILENAME <- "ExplainedVariation.txt"
   FN <- quote(ExplainedVariation)
 } else {

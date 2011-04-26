@@ -12,6 +12,7 @@
 ###_ . inputs
 source("userinputs.r")
 simgrid <- read.delim(file.path(FOLDER,"simgrid.txt"),row.names=1,as.is=TRUE)
+simgrid <- simgrid[with(simgrid,order(nFactors,FPEAK,Seed)),]
 dir.create(file.path(FOLDER,"Allplots"))
 
 ###_* read dim(X), Q-values
@@ -77,13 +78,18 @@ mykey <- with(simgrid,{
        text=list(lab=lab),points=pp)
 })
 
+qvalnplot <- function(relation)
+  xyplot(`Q-ratio`~nFactors, groups=Seed,data=simgrid,
+         panel=panel,pch=simgrid$FPEAK,
+         scales=list(y=list(relation=relation)),
+         key=mykey,
+         ylab=expression(Q/Q[expected]),
+         as.table=TRUE)
+
 simgrid$nFactors <- as.integer(as.character(simgrid$nFactors))
-xout <- xyplot(`Q-ratio`~nFactors, groups=Seed,data=simgrid,
-               panel=panel,pch=simgrid$FPEAK,
-               scales=list(y=list(relation="sliced")),
-               key=mykey,
-               ylab=expression(Q/Q[expected]),
-               as.table=TRUE)
+xout <- tryCatch(qvalnplot("sliced"),error=function(e)
+                 qvalnplot("same"))
+
 
 pdf(file.path(FOLDER,"Allplots","Qvalues-nFactors.pdf"),width=8,height=5)
 print(xout)

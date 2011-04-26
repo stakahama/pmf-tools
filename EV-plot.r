@@ -6,8 +6,9 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
+###_* command-line arguments
 Arg <- tail(commandArgs(),1)
-if( Arg=="EV-plot.r" || Arg=="1" ) {
+if( Arg=="--args" || Arg=="1" ) {
   FILENAME <- "ExplainedVariation.txt"
   OUTFILE <- "ExplainedVariation-nFactors.pdf"
 } else {
@@ -40,6 +41,7 @@ rownames(evstats) <- basename(dirname(rownames(evstats)))
 
 ###_ . merge with simgrid
 simgrid <- read.delim(file.path(FOLDER,"simgrid.txt"),row.names=1)
+simgrid <- simgrid[with(simgrid,order(nFactors,FPEAK,Seed)),]
 simgrid <- with(list(x=merge(simgrid,data.frame(evstats),by="row.names")),
                 `row.names<-`(x[,-1],x[,1]))
 simgrid$Seed <- factor(simgrid$Seed)
