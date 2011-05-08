@@ -1,6 +1,6 @@
 ####################
 ## PMF execution and postprocessing program
-## ~fwsfa.r~
+## ~fsmwa.r~
 ## $Rev$
 ## Feb. 2011
 ## Satoshi Takahama (stakahama@ucsd.edu)
