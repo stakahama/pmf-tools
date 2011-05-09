@@ -20,8 +20,14 @@
 ## Seeds <- 1
 ## newsim <- TRUE
 
-FOLDER <- "runs/FTIR02"
-nFactors <- 4
-FPEAK <- -1.8
-Seeds <- c(1,10,100)
-newsim <- FALSE
+## FOLDER <- "runs/FTIR02"
+## nFactors <- 4
+## FPEAK <- -1.8
+## Seeds <- c(1,10,100)
+## newsim <- FALSE
+
+FOLDER <- "runs/532_091125014_p1"
+nFactors <- 2:3
+FPEAK <- c(-1.2,-0.6,0,0.6,1.2)
+Seeds <- c(1,100)
+newsim <- TRUE

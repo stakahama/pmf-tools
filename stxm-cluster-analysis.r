@@ -94,7 +94,7 @@ for( ngrps in nFactors ) {
   
   pixels <- data.frame(structure(t(mapply(as.numeric,strsplit(dimnames(datamat)$samples,","))),dimnames=list(NULL,c("x","y"))),grps=grps)
 
-  implot <- levelplot(grps~x+y,data=pixels,
+  implot <- levelplot(grps~x+y,data=pixels,aspect="iso",
                       at=0:length(mycolors)+.5,
                       colorkey=list(labels=list(at=1:length(mycolors),
                                       lab=1:length(mycolors))),
