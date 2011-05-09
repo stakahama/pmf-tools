@@ -19,4 +19,26 @@ In either Windows (guest) or Mac/Linux OS (host):
 
 In Windows:
 - open DOS terminal in Windows
-- type: Rscript --no-save runpmf.r
+- type: Rscript --no-save pmf-run.r
+
+Postprocessing functions can be run in Windows or Mac/Linux (can be set up to be called from batch.r):
+- pmf-qvalues.r (Q-values)
+- pmf-g-correlations.r (Inter-correlations among G-factors)
+- pmf-explvar.r (Explained Variations)
+- pmf-explvar-plots.r (Explained Variations plots)
+
+Measurement-specific postprocessing functions:
+- ftir-factorplots.r
+- ftir-residualmatrix.r
+- ftir-generate-F-file.r (for separate FTIR analysis program)
+- stxm-factorplots.r
+
+Measurement-specific preprocessing functions:
+- ftir-fsmwa.r (Fixed-Size Moving Window Analysis)
+- ftir-makematrix.r
+- acsm-extractmatrix.r
+
+Cluster analysis (exports clusters and figures; requires gridBase package in R):
+- ftir-cluster-analysis.r
+- stxm-cluster-analysis.r
+
