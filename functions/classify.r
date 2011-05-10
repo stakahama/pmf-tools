@@ -1,0 +1,5 @@
+runnum <- function(i) file.path(FOLDER,sprintf("%s_%03d",basename(FOLDER),i))
+cosang <- function(x,y)
+  crossprod(x,y)/sqrt(crossprod(x,x))/sqrt(crossprod(y,y))
+p2_norm <- function(x) x/sqrt(crossprod(x,x))
+corr <- function(x,y) cor(x,y,use="pairwise")
