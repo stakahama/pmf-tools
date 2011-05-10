@@ -44,9 +44,9 @@ extend <- function(x,e=1.04) {
   c(min(.x)-.e,max(.x)+.e)
 }
 
+dir.create(file.path(FOLDER,"Allplots")
 correlations <- structure(vector("list",length(sims)),names=sims)
-dir.create("outputs")
-pdf(sprintf("outputs/PMF-matches_%s.pdf",basename(FOLDER)))
+pdf(file.path(FOLDER,"Allplots","db-factor-matches.pdf"))
 for( g in sims ) {
   runno <- as.integer(sub(".+\\_([0-9])","\\1",g))
   X <- as.matrix(read.table(file.path(runnum(runno),"F_FACTOR.TXT")))
@@ -125,7 +125,7 @@ out <- xyplot(r~FPEAK | nFactors*Seed, groups=Class,data=dfr,
                 y=list(at=seq(0,1,.1))),
               auto.key=list(space="right"),#list(x=.7,y=.3),
               as.table=TRUE)
-pdf(sprintf("outputs/summaryplot_%s.pdf",basename(FOLDER)),width=8,height=8)
+pdf(file.path(FOLDER,"Allplots","db-summaryplot.pdf"),width=8,height=8)
 useOuterStrips(out)
 dev.off()
 
@@ -146,6 +146,6 @@ out <- levelplot(value ~ FPEAK+Class | nFactors*Seed, data=long,
                  col.regions=mycol,
                  colorkey=list(labels=list(at=0:max(long$value))),
                  as.table=TRUE)
-pdf(sprintf("outputs/heatmap_%s.pdf",basename(FOLDER)),width=8,height=8)
+pdf(file.path(FOLDER,"Allplots","db-heatmap.pdf"),width=8,height=8)
 useOuterStrips(out)
 dev.off()
