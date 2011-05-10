@@ -8,9 +8,11 @@ library(TeachingDemos)
 
 toimage <- function(pixels,ev,mycol) {
    nfac <- ncol(ev)-1
-   pixcol <- do.call(rgb,replace(rep(list(0),3),1:nfac,unname(ev[,1:nfac])))
+   pixcol <- do.call(rgb,replace(structure(rep(list(0),3),names=c("red","green","blue")),
+                                 1:nfac,unname(ev[,1:nfac])))
+   pixcol <- factor(pixcol)
    ##
-   im <- reshape(data.frame(pixels,z=as.integer(factor(pixcol))),
+   im <- reshape(data.frame(pixels,z=as.integer(pixcol)),
                  timevar="y",idvar="x",direction="wide")
    y <- as.numeric(substring(names(im)[-1],3))
    j <- order(y)
@@ -18,7 +20,7 @@ toimage <- function(pixels,ev,mycol) {
    list(x = as.numeric(im$x),
         y = y[j],
         z = as.matrix(im[,-1])[,j],
-        col = pixcol)
+        col = levels(pixcol))
 }
 
 ###_* inputs
@@ -39,7 +41,7 @@ for( runpath in list.files(FOLDER,basename(FOLDER),full=TRUE) ) {
   ev <- read.delim(file.path(runpath,"ExplainedVariation.txt"))
   im <- toimage(pixels,ev)
   png(file.path(specpath,sprintf("%s.png",basename(runpath))),
-      width=8*96,height=5*96)
+      width=10*96,height=5*96)
   par(mfrow=c(1,2),mar=c(3.5,3.5,.5,.5),mgp=c(2.2,.5,0),oma=c(0,0,1.5,0))
   matplot(energies,t(ff),type="l",lty=1,
           col=c("red","green","blue")[1:nrow(ff)],

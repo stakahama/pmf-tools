@@ -1,6 +1,6 @@
 
 inputs <- readLines("userinputs.r")
-runs <- list.files("runs","532\\_",full=TRUE)[-(1:2)]
+runs <- list.files("runs","532\\_",full=TRUE)
 
 for( x in runs ) {
   print(x)
@@ -10,9 +10,9 @@ for( x in runs ) {
   tryCatch({
     ## source("qvalues.r",local=TRUE)
     ## source("g-correlations.r",local=TRUE)
-    source("stxm-cluster-analysis.r",local=TRUE)    
+    ## source("stxm-cluster-analysis.r",local=TRUE)    
     ## source("EV.r",local=TRUE)      
     ## source("EV-plot.r",local=TRUE)
-    ## source("stxm-factorplots.r",local=TRUE)    
+    source("stxm-factorplots.r",local=TRUE)    
   },error=function(e) print(e))
 }
