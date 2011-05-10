@@ -12,6 +12,8 @@ loadspec <- function(specmat,vars) {
             dimnames=list(wide[,1],
               vars$Wavenumber[match(names(wide)[-1],vars$VariableName)]))
 }
+drv <- dbDriver("SQLite")
+conn <- dbConnect(drv,dbname="dbfiles/ftir-refspec.db")
 refspec <- loadspec(dbReadTable(conn,"spectramatrix"),
                     dbReadTable(conn,"wavenumbertable"))
 refvars <- as.numeric(colnames(refspec))

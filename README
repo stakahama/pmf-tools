@@ -42,3 +42,6 @@ Cluster analysis (exports clusters and figures; requires gridBase package in R):
 - ftir-cluster-analysis.r
 - stxm-cluster-analysis.r
 
+Classification analysis
+- ftir-factor-classification.r (requires .db file provided separately)
+- acsm-factor-classification.r (to add; based on .db file created from J. Jimenez's Wiki data)
