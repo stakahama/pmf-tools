@@ -10,14 +10,15 @@ loadspec <- function(specmat,vars) {
   wide <- cast(specmat,Spectrum~VariableName,value="Absorbance")
   structure(as.matrix(wide[,-1]),
             dimnames=list(wide[,1],
-              vars$Wavenumber[match(names(wide)[-1],vars$VariableName)]))
+              vars$Wavenumber[match(names(wide)[-1],vars$VarName)]))
 }
 drv <- dbDriver("SQLite")
 conn <- dbConnect(drv,dbname="dbfiles/ftir-refspec.db")
 refspec <- loadspec(dbReadTable(conn,"spectramatrix"),
                     dbReadTable(conn,"wavenumbertable"))
 refvars <- as.numeric(colnames(refspec))
-refclasses <- read.orgtable("dbfiles/classes.org")
+refclasses <- dbReadTable(conn,"classes")
+dbDisconnect(conn)
 
 ###_* inputs
 
