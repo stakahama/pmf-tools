@@ -23,8 +23,7 @@ dbDisconnect(conn)
 ###_* inputs
 
 attach(NULL,name="userinputs")
-sys.source("~/VirtualBoxDocuments/programs/pmf/userinputs.r",
-           as.environment("userinputs"))
+sys.source("userinputs.r",as.environment("userinputs"))
 
 ## this is to select a subset of reference variables if desired
 refxval <- list(x=refvars,cols=TRUE)
