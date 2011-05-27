@@ -97,7 +97,8 @@ environment(image.plot) <- tmp.env
 
 ### ---
 
-pdf(file.path(FOLDER,"Allplots","PMF-Residuals.pdf"))
+pdf(file.path(FOLDER,"Allplots",
+              sprintf("PMF-Residuals_%s_%03d.pdf",basename(FOLDER),runno)))
 
 xlabs <- replace(seq(4000,1500,-500),1,3800)
 xticks <- approxExtrap(extwn,1:ncol(extE),xlabs)$y
