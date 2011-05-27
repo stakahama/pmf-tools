@@ -6,7 +6,6 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
-
 source("userinputs.r")
 source("functions/classify.r")
 
@@ -84,8 +83,9 @@ image <- function(x,y,z,col,...) {
   if(is.null(zlim)) {
     zcol <- as.raster(structure(col[cut(z,n)],dim=dim(z)))
   } else {
-    zcol <- as.raster(structure(col[factor(findInterval(z,seq(zlim[1],zlim[2],,n)),
-                                           levels=1:n)],dim=dim(z)))
+    zcol <- as.raster(structure(col[factor(findInterval(z,seq(zlim[1],zlim[2],,n+1)),
+                                           levels=1:n)],
+                                dim=dim(z)))
   }
   rasterImage(zcol,min(x),min(y),max(x),max(y))
 }
@@ -97,9 +97,12 @@ environment(image.plot) <- tmp.env
 
 ### ---
 
-pdf(file.path(FOLDER,"Allplots",
-              sprintf("PMF-Residuals_%s_%03d.pdf",basename(FOLDER),runno)))
+filename <-
+  with(list(s=sprintf("PMF-Residuals-%%s_%s_%03d.pdf",basename(FOLDER),runno)),
+       function(x) sprintf(s,x))
 
+pdf(file.path(FOLDER,"Allplots",filename("E")))
+##
 xlabs <- replace(seq(4000,1500,-500),1,3800)
 xticks <- approxExtrap(extwn,1:ncol(extE),xlabs)$y
 ylim <- c(1,nrow(extE))
@@ -119,7 +122,10 @@ title(xlab=expression(Wavenumber ~ (cm^-1)),mgp=c(2.2,.7,0))
 title(ylab="Sample",mgp=c(2.5,.7,0))
 title(main="Residual Matrix, E")
 image.plot(t(extE),col=tim.colors(64),legend.only=TRUE)
+##
+dev.off()
 
+pdf(file.path(FOLDER,"Allplots",filename("ES")))
 local({
   extE <- extEs
   xlabs <- replace(seq(4000,1500,-500),1,3800)
@@ -138,7 +144,9 @@ local({
   title(main="Scaled Residual Matrix, E/S")
   image.plot(t(extE),col=tim.colors(64),legend.only=TRUE)
 })
+dev.off()
 
+pdf(file.path(FOLDER,"Allplots",filename("Wavenumbers")))
 local({
   par(mar=c(4,4,2,6))  
   extE <- cor(extE)
@@ -159,8 +167,9 @@ local({
   title(main=expression("normalized"~E^T*E))
   image.plot(t(extE),col=tim.colors(64),zlim=c(-1,1),legend.only=TRUE)
 })
+dev.off()
 
-
+pdf(file.path(FOLDER,"Allplots",filename("Samples")))
 local({
   par(mar=c(4,4,2,6))  
   E <- cor(t(E))
@@ -178,6 +187,5 @@ local({
   title(main=expression("normalized"~E*E^T))  
   image.plot(t(E),col=tim.colors(64),zlim=c(-1,1),legend.only=TRUE)
 })
-
 dev.off()
 
