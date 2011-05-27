@@ -21,13 +21,12 @@ if( Arg=="--args" || Arg=="1" ) {
 
 ###_* import
 source("userinputs.r")
-source("filepaths.r")
 source("functions/harvest.r")
 patt <- ".+\\_([0-9]{3})"
 
 ###_* volumes
 divbyv <- 
-  if(is.null(projectinfofile)) identity else {
+  if(!exists("projectinfofile") || is.null(projectinfofile)) identity else {
     local({
       pjinfo <- read.delim(projectinfofile)
       names(pjinfo) <- tolower(names(pjinfo))

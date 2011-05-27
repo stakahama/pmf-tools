@@ -1,5 +1,8 @@
 ###_* library
 source("functions/classify.r")
+source("userinputs.r")
+
+if(!exists("dbname")) dbname <- "dbfiles/ftir-refspec.db"
 
 ###_* load reference spectra
 ## --- please request ftir-refspec.db from s.t. and place it in a
@@ -10,10 +13,10 @@ loadspec <- function(specmat,vars) {
   wide <- cast(specmat,Spectrum~VariableName,value="Absorbance")
   structure(as.matrix(wide[,-1]),
             dimnames=list(wide[,1],
-              vars$Wavenumber[match(names(wide)[-1],vars$VarName)]))
+              vars$Wavenumber[match(names(wide)[-1],vars$VariableName)]))
 }
 drv <- dbDriver("SQLite")
-conn <- dbConnect(drv,dbname="dbfiles/ftir-refspec.db")
+conn <- dbConnect(drv,dbname=dbname)
 refspec <- loadspec(dbReadTable(conn,"spectramatrix"),
                     dbReadTable(conn,"wavenumbertable"))
 refvars <- as.numeric(colnames(refspec))
@@ -44,7 +47,7 @@ extend <- function(x,e=1.04) {
   c(min(.x)-.e,max(.x)+.e)
 }
 
-dir.create(file.path(FOLDER,"Allplots")
+dir.create(file.path(FOLDER,"Allplots"))
 correlations <- structure(vector("list",length(sims)),names=sims)
 pdf(file.path(FOLDER,"Allplots","db-factor-matches.pdf"))
 for( g in sims ) {
@@ -72,7 +75,7 @@ for( g in sims ) {
   near <- structure(rownames(ref.X)[apply(ref.X,2,which.max)],
                     names=colnames(ref.X))
   correlations[[g]] <- Map(function(a,b) structure(ref.X[a,b],names=a),near,names(near))
-  next()
+  ##next()
   ##
   xlim <- c(4000,1400)
   par(mfrow=c(length(near),2),mar=c(0,0,0,0),oma=c(4,4,2,2),mgp=c(2.2,.5,0))

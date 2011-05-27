@@ -7,7 +7,7 @@ load.itx("acsm_pmfmats.itx")
 org_specs <- t(org_specs)
 orgspecs_err <- t(orgspecs_err)
 acsm_time <- IGORdatetime(acsm_time)
-ErrorMatB4DownWeight <- t(ErrorMatB4DownWeight)
+## ErrorMatB4DownWeight <- t(ErrorMatB4DownWeight)
 setwd(here)
 
 ## subset functions
@@ -22,27 +22,29 @@ validsamples <- function() {
   org_specs <<- org_specs[samples,]
   orgspecs_err <<- orgspecs_err[samples,]
   acsm_time <<- acsm_time[samples]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,]
 }
 validamus <- function() {
   ## local assignment
   minval <- 1e-5 ##.Machine$double.eps
-  columns <- apply(ErrorMatB4DownWeight,2,function(x,m) any(x > m),minval)
+  ## columns <- apply(ErrorMatB4DownWeight,2,function(x,m) any(x > m),minval)
+  columns <- apply(orgspecs_err,2,function(x,m) any(x > m),minval)  
   ## global assignment  
   org_specs <<- org_specs[,columns]
   orgspecs_err <<- orgspecs_err[,columns]
   acsm_time <<- acsm_time[columns]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[,columns]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[,columns]
 }
 sdvgt0 <- function() {
   ## local assignment
   minval <- 1e-5 ##.Machine$double.eps
-  samples <- apply(ErrorMatB4DownWeight,1,function(x,m) all(x > m),minval)
+  ## samples <- apply(ErrorMatB4DownWeight,1,function(x,m) all(x > m),minval)
+  samples <- apply(orgspecs_err,1,function(x,m) all(x > m),minval)
   ## global assignment    
   org_specs <<- org_specs[samples,]
   orgspecs_err <<- orgspecs_err[samples,]
   acsm_time <<- acsm_time[samples]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,]
 }
 specialcase <- function() { ## --- june only ---
   samples <- acsm_time >= "06/01/10" ##& org_specs[,amus==44] > -.15
@@ -51,7 +53,7 @@ specialcase <- function() { ## --- june only ---
   org_specs <<- org_specs[samples,select]
   orgspecs_err <<- orgspecs_err[samples,select]
   acsm_time <<- acsm_time[samples]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
   amus <<- amus[select]
 }
 june_nonneg <- function() { ## --- june only ---
@@ -61,7 +63,7 @@ june_nonneg <- function() { ## --- june only ---
   org_specs <<- abs(org_specs[samples,select])
   orgspecs_err <<- orgspecs_err[samples,select]
   acsm_time <<- acsm_time[samples]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
   amus <<- amus[select]
 }
 june_lowmz <- function() { ## --- june only ---
@@ -71,7 +73,7 @@ june_lowmz <- function() { ## --- june only ---
   org_specs <<- org_specs[samples,select]
   orgspecs_err <<- orgspecs_err[samples,select]
   acsm_time <<- acsm_time[samples]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
   amus <<- amus[select]
 }
 june_abslowmz <- function() { ## --- june only ---
@@ -81,27 +83,35 @@ june_abslowmz <- function() { ## --- june only ---
   org_specs <<- abs(org_specs[samples,select])
   orgspecs_err <<- orgspecs_err[samples,select]
   acsm_time <<- acsm_time[samples]
-  ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  ## ErrorMatB4DownWeight <<- ErrorMatB4DownWeight[samples,select]
+  amus <<- amus[select]
+}
+mzlt100 <- function() { ## --- june only ---
+  select <- amus <= 100
+  ## global assignment    
+  org_specs <<- abs(org_specs[,select,drop=FALSE])
+  orgspecs_err <<- orgspecs_err[,select,drop=FALSE]
   amus <<- amus[select]
 }
 
 ## apply functions
 
-validsamples()
-sdvgt0()
+## validsamples()
+## sdvgt0()
 ## specialcase()
 ## june_nonneg()
 ## june_lowmz()
-june_abslowmz()
+## june_abslowmz()
+mzlt100()
 
 ## extract
 
-runpath <- "runs/ACSM07"
+runpath <- "runs/ACSM10"
 dir.create(runpath)
 write.table(formatC(org_specs,format="g"),
             file=file.path(runpath,"MATRIX.DAT"),sep="\t",
             row.names=FALSE,col.names=FALSE,quote=FALSE)
-write.table(formatC(ErrorMatB4DownWeight,format="g"),
+write.table(formatC(orgspecs_err,format="g"),
             file=file.path(runpath,"STD_DEV.DAT"),sep="\t",
             row.names=FALSE,col.names=FALSE,quote=FALSE)
 write(amus,file.path(runpath,"variables.txt"),ncol=1)

@@ -8,15 +8,16 @@
 
 
 source("userinputs.r")
+source("functions/classify.r")
 
-runno <- "WP3_004"
+solution <- runnum(runno)
 
 wn <- scan(file.path(FOLDER,"variables.txt"),quiet=TRUE)
 samples <- scan(file.path(FOLDER,"samples.txt"),"",quiet=TRUE)
 X <- as.matrix(read.table(file.path(FOLDER,"matrix.dat")))
 S <- as.matrix(read.table(file.path(FOLDER,"std_dev.dat")))
-F <- as.matrix(read.table(file.path(FOLDER,"WP3_004","F_FACTOR.TXT")))
-G <- as.matrix(read.table(file.path(FOLDER,"WP3_004","G_FACTOR.TXT")))
+F <- as.matrix(read.table(file.path(solution,"F_FACTOR.TXT")))
+G <- as.matrix(read.table(file.path(solution,"G_FACTOR.TXT")))
 
 rownames(X) <- rownames(G) <- samples
 rownames(F) <- colnames(G) <- sprintf("Factor%d",1:nrow(F))
@@ -26,22 +27,22 @@ Ecov <- E%*%t(E)
 Ecov <- cor(E)
 
 library(fields)
-image.plot(t(Ecov[1,,drop=FALSE]))
-image.plot(Ecov[1:5,],axes=FALSE)
-axis(1,axTicks(1),lab=approx(1:ncol(E),wn,axTicks(1))$y)
+## image.plot(t(Ecov[1,,drop=FALSE]))
+## image.plot(Ecov[1:5,],axes=FALSE)
+## axis(1,axTicks(1),lab=approx(1:ncol(E),wn,axTicks(1))$y)
 
 library(Hmisc)
-par(mar=c(4,4,2,6))
-xlabs <- replace(seq(4000,1500,-500),1,3800)
-xticks <- approxExtrap(wn,1:ncol(E),xlabs)$y
-image(1:ncol(E),1:nrow(E),t(E),col=tim.colors(64),axes=FALSE,
-      xlim=range(xticks),ann=FALSE)
-axis(1,tail(xticks,-1),lab=tail(xlabs,-1),mgp=c(2.2,.7,0))
-axis(2,1:nrow(E),lab=rownames(E),las=1,cex.axis=.5,tck=-.01,mgp=c(2.2,.5,0))
-box()
-title(xlab=expression(Wavenumber ~ (cm^-1)),mgp=c(2.2,.7,0))
-title(ylab="Sample",mgp=c(2.5,.7,0))
-image.plot(t(E),col=tim.colors(64),legend.only=TRUE)
+## par(mar=c(4,4,2,6))
+## xlabs <- replace(seq(4000,1500,-500),1,3800)
+## xticks <- approxExtrap(wn,1:ncol(E),xlabs)$y
+## image(1:ncol(E),1:nrow(E),t(E),col=tim.colors(64),axes=FALSE,
+##       xlim=range(xticks),ann=FALSE)
+## axis(1,tail(xticks,-1),lab=tail(xlabs,-1),mgp=c(2.2,.7,0))
+## axis(2,1:nrow(E),lab=rownames(E),las=1,cex.axis=.5,tck=-.01,mgp=c(2.2,.5,0))
+## box()
+## title(xlab=expression(Wavenumber ~ (cm^-1)),mgp=c(2.2,.7,0))
+## title(ylab="Sample",mgp=c(2.5,.7,0))
+## image.plot(t(E),col=tim.colors(64),legend.only=TRUE)
 
 extwn <- seq(max(wn),min(wn),median(diff(wn)))
 asint <- function(x) as.integer(round(x*100))
@@ -66,7 +67,37 @@ repl <- function(x) {
   x
 }
 
-pdf("PMF-Errors.pdf")
+### --- this is to reduce size of output pdf but compression is recommended ---
+### --- this section can be deleted to call the original image and image.plot ---
+
+image <- function(x,y,z,col,...) {
+  args <- list(...)
+  z <- t(z)
+  n <- length(col)
+  add <- args$add
+  zlim <- args$zlim
+  asp <- args$asp
+  if(is.null(add) || !add) {
+    plot.new()
+    plot.window(range(x),range(y),asp=if(is.null(asp)) NA else asp)
+  }
+  if(is.null(zlim)) {
+    zcol <- as.raster(structure(col[cut(z,n)],dim=dim(z)))
+  } else {
+    zcol <- as.raster(structure(col[factor(findInterval(z,seq(zlim[1],zlim[2],,n)),
+                                           levels=1:n)],dim=dim(z)))
+  }
+  rasterImage(zcol,min(x),min(y),max(x),max(y))
+}
+
+attach(NULL,name="tmp",pos=2)
+tmp.env <- as.environment("tmp")
+image.plot <- fields::image.plot
+environment(image.plot) <- tmp.env
+
+### ---
+
+pdf(file.path(FOLDER,"Allplots","PMF-Residuals.pdf"))
 
 xlabs <- replace(seq(4000,1500,-500),1,3800)
 xticks <- approxExtrap(extwn,1:ncol(extE),xlabs)$y
@@ -112,9 +143,10 @@ local({
   extE <- cor(extE)
   xlabs <- replace(seq(4000,1500,-500),1,3800)
   xticks <- approxExtrap(extwn,1:ncol(extE),xlabs)$y
-  squishplot(xlim=range(xticks),ylim=range(xticks),new=FALSE)  
+  xlim <- c(1,ncol(extE))
+  squishplot(xlim=xlim,ylim=xlim,asp=1,new=FALSE)  
   plot.new()
-  plot.window(range(xticks),range(xticks),asp=1,xaxs="i",yaxs="i")
+  plot.window(xlim=xlim,ylim=xlim,asp=1,xaxs="i",yaxs="i")
   do.call(rect,c(as.list(par("usr")[c(1,3,2,4)]),col="black"))
   image(1:ncol(extE),1:nrow(extE),t(extE),col=tim.colors(64),zlim=c(-1,1),
         add=TRUE)
@@ -132,9 +164,10 @@ local({
   par(mar=c(4,4,2,6))  
   E <- cor(t(E))
   xticks <- 1:length(samples)
-  squishplot(xlim=range(xticks),ylim=range(xticks),new=FALSE)
+  squishplot(xlim=range(xticks),ylim=range(xticks),asp=1,new=FALSE)
   image(1:ncol(E),1:nrow(E),t(E),col=tim.colors(64),zlim=c(-1,1),axes=FALSE,
-        xlim=range(xticks),ylim=range(xticks),ann=FALSE,asp=1)
+        xlim=range(xticks),ylim=range(xticks),ann=FALSE,asp=1,
+        xaxs="i",yaxs="i")
   axis(1,xticks,lab=FALSE,mgp=c(2.2,.5,0),las=1,tck=-.01)
   text(xticks,par("usr")[3]-par("cxy")[2]*1.1,samples,cex=.5,xpd=NA,srt=90)
   axis(2,xticks,lab=samples,mgp=c(2.2,.5,0),las=1,tck=-.01,cex.axis=.5)
@@ -146,6 +179,4 @@ local({
 })
 
 dev.off()
-
-compressPDF("PMF-Errors.pdf")
 

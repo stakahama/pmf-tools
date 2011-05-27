@@ -35,13 +35,17 @@ samples.use <- if(is.character(samples.use) && file.exists(samples.use))
 mat <- do.call(rbind,bl[samples.use,"baselined"])
 
 ## Select wavenumbers
-deps <- with(.Machine,max(abs(c(double.eps,double.neg.eps))))
+## deps <- with(.Machine,max(abs(c(double.eps,double.neg.eps))))
+smallest.digit <- 5
+deps <- 10^-smallest.digit
 wavenums.use <- with(blanks,Sd > deps)
 mat <- mat[,wavenums.use]
 stdev <- outer(rep(1,nrow(mat)),blanks$Sd[wavenums.use])
 ## stdev <- 1/mat
 
-form <- function(x) structure(sprintf("%.5f",x),dim=dim(x))
+form <- function(x)
+  structure(sprintf(sprintf("%%.%df",smallest.digit),x),
+            dim=dim(x))
 
 write.table(form(mat),file.path(datapath,"matrix.dat"),
             row.names=FALSE,col.names=FALSE,sep="\t",quote=FALSE)

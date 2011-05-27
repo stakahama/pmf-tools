@@ -30,6 +30,7 @@ Postprocessing functions can be run in Windows or Mac/Linux (can be set up to be
 Measurement-specific postprocessing functions:
 - ftir-factorplots.r
 - ftir-residualmatrix.r
+- ftir-factor-classification.r (please request .db file)
 - ftir-generate-F-file.r (for separate FTIR analysis program)
 - stxm-factorplots.r
 

@@ -79,7 +79,7 @@ for( ngrps in nFactors ) {
 ###_  ii. spectra
   
   longspec <- melt(datamat)
-  longspec$grps <- grps[longspec$samples]
+  longspec$grps <- factor(grps[longspec$samples])
 
   specplot <- xyplot(value ~ variables | grps, groups=grps, data=longspec,
                      panel=specpanel, samples=longspec$samples,
