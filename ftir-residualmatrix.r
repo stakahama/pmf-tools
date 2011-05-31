@@ -8,6 +8,7 @@
 
 source("userinputs.r")
 source("functions/classify.r")
+source("functions/imageplots.r")
 
 solution <- runnum(runno)
 
@@ -26,11 +27,13 @@ Ecov <- E%*%t(E)
 Ecov <- cor(E)
 
 library(fields)
+##{{{
 ## image.plot(t(Ecov[1,,drop=FALSE]))
 ## image.plot(Ecov[1:5,],axes=FALSE)
 ## axis(1,axTicks(1),lab=approx(1:ncol(E),wn,axTicks(1))$y)
-
+##}}}
 library(Hmisc)
+##{{{
 ## par(mar=c(4,4,2,6))
 ## xlabs <- replace(seq(4000,1500,-500),1,3800)
 ## xticks <- approxExtrap(wn,1:ncol(E),xlabs)$y
@@ -42,6 +45,7 @@ library(Hmisc)
 ## title(xlab=expression(Wavenumber ~ (cm^-1)),mgp=c(2.2,.7,0))
 ## title(ylab="Sample",mgp=c(2.5,.7,0))
 ## image.plot(t(E),col=tim.colors(64),legend.only=TRUE)
+##}}}
 
 extwn <- seq(max(wn),min(wn),median(diff(wn)))
 asint <- function(x) as.integer(round(x*100))
@@ -65,35 +69,6 @@ repl <- function(x) {
   x[!i] <- NA
   x
 }
-
-### --- this is to reduce size of output pdf but compression is recommended ---
-### --- this section can be deleted to call the original image and image.plot ---
-
-image <- function(x,y,z,col,...) {
-  args <- list(...)
-  z <- t(z)
-  n <- length(col)
-  add <- args$add
-  zlim <- args$zlim
-  asp <- args$asp
-  if(is.null(add) || !add) {
-    plot.new()
-    plot.window(range(x),range(y),asp=if(is.null(asp)) NA else asp)
-  }
-  if(is.null(zlim)) {
-    zcol <- as.raster(structure(col[cut(z,n)],dim=dim(z)))
-  } else {
-    zcol <- as.raster(structure(col[factor(findInterval(z,seq(zlim[1],zlim[2],,n+1)),
-                                           levels=1:n)],
-                                dim=dim(z)))
-  }
-  rasterImage(zcol,min(x),min(y),max(x),max(y))
-}
-
-attach(NULL,name="tmp",pos=2)
-tmp.env <- as.environment("tmp")
-image.plot <- fields::image.plot
-environment(image.plot) <- tmp.env
 
 ### ---
 

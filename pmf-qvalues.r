@@ -7,6 +7,18 @@
 ####################
 
 
+###_* command-line arguments
+Arg <- tail(commandArgs(),1)
+if( Arg=="--args" || Arg=="1" ) {
+  CHI2 <- "final"
+  OUTFILE1 <- "Qvalues-FPEAK.pdf"
+  OUTFILE2 <- "Qvalues-nFactors.pdf"
+} else {
+  CHI2 <- "true"
+  OUTFILE1 <- "Qvalues_true-FPEAK.pdf"
+  OUTFILE2 <- "Qvalues_true-nFactors.pdf"
+}
+
 ###_* read simgrid
 
 ###_ . inputs
@@ -24,8 +36,13 @@ eqm <- function(p) prod(dim(Xmat)) - p*(sum(dim(Xmat)))
 ###_ . Q-values
 outputs <- list.files(FOLDER,"output.txt",recursive=TRUE,full=TRUE)
 maybe <- function(x) if(length(x)==0) NA else x
-qval <- function(x, patt=".*Final chi2[=][ ]*([0-9.]+).*")
-  maybe(as.numeric(sub(patt,"\\1",grep(patt,readLines(x),value=TRUE))))
+if( CHI2=="final" ) {
+  qval <- function(x, patt=".*Final chi2[=][ ]*([0-9.]+).*")
+    maybe(as.numeric(sub(patt,"\\1",grep(patt,readLines(x),value=TRUE))))
+} else {
+  qval <- function(x, patt="The true final chi2 value.+[=][ ]*([0-9.]+).*")
+    maybe(as.numeric(sub(patt,"\\1",grep(patt,readLines(x),value=TRUE))))
+}
 vals <- sapply(outputs,qval)
 names(vals) <- basename(dirname(names(vals)))
 
@@ -51,7 +68,7 @@ qvalplot <- function(yaxis.relation="sliced")  {
 xout <- tryCatch(qvalplot("sliced"),error=function(e)
                  qvalplot("same"))
 
-pdf(file.path(FOLDER,"Allplots","Qvalues-FPEAK.pdf"),width=8,height=5)
+pdf(file.path(FOLDER,"Allplots",OUTFILE1),width=8,height=5)
 ## print(update(xout,scales=list(y=list(relation="same"))))
 print(xout)
 dev.off()
@@ -91,7 +108,7 @@ xout <- tryCatch(qvalnplot("sliced"),error=function(e)
                  qvalnplot("same"))
 
 
-pdf(file.path(FOLDER,"Allplots","Qvalues-nFactors.pdf"),width=8,height=5)
+pdf(file.path(FOLDER,"Allplots",OUTFILE2),width=8,height=5)
 print(xout)
 dev.off()
 

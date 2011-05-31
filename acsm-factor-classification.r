@@ -6,11 +6,20 @@ source("userinputs.r")
 
 if(!exists("dbname")) dbname <- "dbfiles/acsm-refspec.db"
 
+###_* command-line arguments
+Arg <- tail(commandArgs(),1)
+if( Arg=="--args" || Arg=="1" ) { ## default
+  ALL <- FALSE
+  SUFFIX <- ""
+} else if( tolower(Arg)=="all" ) {
+  ALL <- TRUE
+  SUFFIX <- "_all"  
+}
+
 ###_* load reference spectra
 db2matrix <- function(refspec)
   `rownames<-`(as.matrix(refspec[,-(1:2)]),
                do.call(paste,c(refspec[,(1:2)],list(sep=":"))))
-
 
 tablename <- "reference_spectra"
 drv <- dbDriver("SQLite")
@@ -19,12 +28,14 @@ refspec <- dbReadTable(conn,tablename)
 dbDisconnect(conn)
 
 refspec <- db2matrix(refspec)
-dowant <- c("OOA","HOA","BB")
-refspec <-
-  refspec[rownames(refspec) %in%
-          unlist(lapply(dowant,grep,
-                        rownames(refspec),
-                        value=TRUE,ignore.case=TRUE)),]
+if( !ALL ) {
+  dowant <- c("OOA","HOA","BB")
+  refspec <-
+    refspec[rownames(refspec) %in%
+            unlist(lapply(dowant,grep,
+                          rownames(refspec),
+                          value=TRUE,ignore.case=TRUE)),]
+}
 refvars <- as.integer(sub("^mz","",colnames(refspec)))
 
 ###_* inputs
@@ -45,7 +56,7 @@ sims <- rownames(subset(simgrid,nFactors %in% 2:8))
 
 correlations <- structure(vector("list",length(sims)),names=sims)
 dir.create(file.path(FOLDER,"Allplots"))
-pdf(file.path(FOLDER,"Allplots",sprintf("PMF-matches_%s.pdf",basename(FOLDER))))
+pdf(file.path(FOLDER,"Allplots",sprintf("PMF-matches%s.pdf",SUFFIX)))
 for( g in sims ) {
   runno <- as.integer(sub(".+\\_([0-9])","\\1",g))
   X <- as.matrix(read.table(file.path(runnum(runno),"F_FACTOR.TXT")))
@@ -130,7 +141,7 @@ out <- xyplot(r~FPEAK | nFactors*Seed, groups=Class,data=dfr,
                 y=list(at=seq(0,1,.1))),
               auto.key=list(space="right"),#list(x=.7,y=.3),
               as.table=TRUE)
-pdf(file.path(FOLDER,"Allplots",sprintf("summaryplot_%s.pdf",basename(FOLDER))),
+pdf(file.path(FOLDER,"Allplots",sprintf("summaryplot%s.pdf",SUFFIX)),
     width=10,height=6)
 useOuterStrips(out)
 dev.off()
@@ -152,7 +163,7 @@ out <- levelplot(value ~ FPEAK+Class | nFactors*Seed, data=long,
                  col.regions=mycol,
                  colorkey=list(labels=list(at=0:max(long$value))),
                  as.table=TRUE)
-pdf(file.path(FOLDER,"Allplots",sprintf("heatmap_%s.pdf",basename(FOLDER))),
+pdf(file.path(FOLDER,"Allplots",sprintf("heatmap%s.pdf",SUFFIX)),
     width=10,height=6)
 useOuterStrips(out)
 dev.off()
