@@ -19,19 +19,7 @@ X <- as.matrix(read.table(file.path(FOLDER,"matrix.dat")))
 Xstdev <- as.matrix(read.table(file.path(FOLDER,"std_dev.dat")))
 
 ## set up grid
-simgrid <- local({
-  new <- expand.grid(nFactors=nFactors,FPEAK=FPEAK,Seed=Seeds)
-  new <- new[with(new,order(nFactors,FPEAK)),]
-  patt <- sprintf("%s\\_([0-9]+)",basename(FOLDER))
-  mx <- (if( newsim ) 0 else
-         (if(file.exists(FOLDER) &&
-             length(fi <- list.files(FOLDER,patt,full=TRUE)) > 0)
-          max(0,as.integer(na.omit(sub(patt,"\\1",
-                                       basename(fi[file.info(fi)$isdir])))),
-              na.rm=TRUE) else 0))
-  `rownames<-`(new,paste(basename(FOLDER),
-                         substring(1000+mx+(1:nrow(new)),2),sep="_"))
-})
+simgrid <- creategrid(nFactors,FPEAK,Seeds,newsim)
 
 ## (this is a function which requires nFactors and FPEAK)
 ## also make sure $X$ is created and exists in global space

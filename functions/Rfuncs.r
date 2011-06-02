@@ -7,6 +7,28 @@
 ####################
 
 
+## make simgrid
+creategrid <- function(nFactors,FPEAK,Seeds,newsim) {
+  gr <- expand.grid(nFactors=nFactors,FPEAK=FPEAK,Seed=Seeds)
+  gr <- gr[with(gr,order(nFactors,FPEAK)),]
+  patt <- sprintf("%s\\_([0-9]+)",basename(FOLDER))
+  if(newsim) {
+    mx <- 0
+  } else {
+    if(file.exists(file.path(FOLDER,"simgrid.txt"))) {
+      simgrid <- read.delim(file.path(FOLDER,"simgrid.txt"),row.names=1,
+                            colClasses=c("character","integer","numeric","numeric"))
+      gr <- gr[!do.call(paste,gr) %in% do.call(paste,simgrid),]
+      mx <- max(as.integer(sub(patt,"\\1",rownames(simgrid)))    )    
+    } else {
+      mx <- 0
+    }
+  }
+  rownames(gr) <- paste(basename(FOLDER),
+                        substring(1000+mx+(1:nrow(gr)),2),sep="_")
+  gr
+}
+
 ## modify INI file to adjust parameters
 ## nrow, ncol, nFactors, FPEAK
 
