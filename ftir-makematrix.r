@@ -29,16 +29,22 @@ for( i in 1:nrow(bl) )
 
 ## Subset Type == "S"
 ## Make sample matrix
-## samples.use should be defined in ftirinputs.r
+## samples.use should be defined in ftir-inputs.r
 samples.use <- if(is.character(samples.use) && file.exists(samples.use))
   readLines(samples.use) else samples.use
 mat <- do.call(rbind,bl[samples.use,"baselined"])
 
 ## Select wavenumbers
 ## deps <- with(.Machine,max(abs(c(double.eps,double.neg.eps))))
+if(is.character(samples.use) && file.exists(samples.use)) {
+  wavenums <- scan(wavenums.use,0,quiet=TRUE)
+  wavenums.use <- sprintf("%.2f",blanks$Wavenumber) %in% sprintf("%.2f",wavenums)
+} else {
+  wavenums.use <- TRUE
+}
 smallest.digit <- 5
 deps <- 10^-smallest.digit
-wavenums.use <- with(blanks,Sd > deps)
+wavenums.use <- wavenums.use & with(blanks,Sd > deps)
 mat <- mat[,wavenums.use]
 stdev <- outer(rep(1,nrow(mat)),blanks$Sd[wavenums.use])
 ## stdev <- 1/mat

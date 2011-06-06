@@ -19,6 +19,7 @@ X <- as.matrix(read.table(file.path(FOLDER,"matrix.dat")))
 Xstdev <- as.matrix(read.table(file.path(FOLDER,"std_dev.dat")))
 
 ## set up grid
+newsim <- (if(file.exists(file.path(FOLDER,"simgrid.txt"))) FALSE else TRUE)
 simgrid <- creategrid(nFactors,FPEAK,Seeds,newsim)
 
 ## (this is a function which requires nFactors and FPEAK)

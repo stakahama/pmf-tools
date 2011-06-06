@@ -14,6 +14,11 @@ source("userinputs.r")
 source("functions/classify.r")
 source("functions/imageplots.r")
 
+Arg <- tail(commandArgs(),1)
+runno <- as.integer(Arg)
+if( is.na(runno) )
+  stop("enter run number as integer")
+
 solution <- runnum(runno)
 
 mz <- scan(file.path(FOLDER,"variables.txt"),quiet=TRUE)
@@ -57,8 +62,8 @@ E <- X - G%*%F
 ##}}}
 
 filename <-
-  with(list(s=sprintf("PMF-Residuals-%%s_%s_%03d.png",basename(FOLDER),runno)),
-       function(x) sprintf(s,x))
+  with(list(s=sprintf("%s_%03d-PMF-Residuals-%%s%%s",basename(FOLDER),runno)),
+       function(x,ext=".png") sprintf(s,x,ext))
 
 png(file.path(FOLDER,"Allplots",filename("E")),width=96*6)
 par(mar=c(4,5,1.5,6),mgp=c(2.2,.5,0))
@@ -86,7 +91,7 @@ with(list(s=samples),{
 })
 box()
 title(xlab="m/z")
-mtext("E",3)
+mtext("E/S",3)
 image.plot(z=t(E/S),col=tim.colors(64),legend.only=TRUE)
 dev.off()
 
@@ -105,4 +110,47 @@ title(xlab="m/z",ylab="m/z")
 mtext(expression("normalized"~ E^T*E),3,line=.5)
 image.plot(zlim=c(-1,1),col=tim.colors(n),
            legend.only=TRUE)
+dev.off()
+
+plotbox <- function(mat,mz,ev=FALSE) {
+  plot.new()
+  if(ev) {
+    plot.window(range(mz),c(0,100))
+  } else {
+    plot.window(range(mz),
+                quantile(mat,.995,na.rm=TRUE)*c(-1,1))
+  }
+  abline(h=0,col=8)
+  boxplot(split(mat,col(mat)), xaxt="n",lty=1,
+          pars=list(outpch=".",outcol="blue"),
+          border="blue",add=TRUE,at=mz,lend=3)
+  axis(1,pretty(mz))
+}
+
+pdf(file.path(FOLDER,"Allplots",filename("boxplots",".pdf")),
+    width=8,height=6)
+par(mfrow=c(3,1))
+par(mar=c(1,1,.5,.5),oma=c(3,3,1,1),mgp=c(2.2,.5,0))    
+plotbox(E,mz)
+title(ylab="E",xpd=NA)
+plotbox(E/S,mz)
+title(ylab="E/S",xpd=NA)
+plotbox(abs(G%*%F)/(abs(G%*%F)+abs(E))*1e2,mz,TRUE)
+axis(1,pretty(mz))
+title(ylab="Explained Variation (%)",xpd=NA)
+mtext("m/z",1,outer=TRUE,line=1)
+dev.off()
+
+EVi <- rowSums(abs(G%*%F)/S)/
+  rowSums((abs(G%*%F)+abs(E))/S)*1e2
+Org <- rowSums(X[,na.omit(match(10:125,mz))])
+
+pdf(file.path(FOLDER,"Allplots",filename("EV-Org",".pdf")),
+    width=8,height=5)
+plot(Org,EVi,
+     xlim=c(0,max(Org,na.rm=TRUE)*1.2),
+     ylim=c(0,100),
+     col=4,cex=.5,
+     xlab=expression("Org"~(mu*g/m^3)),
+     ylab="Explained Variation (%)")
 dev.off()

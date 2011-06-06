@@ -31,11 +31,13 @@ runs <- list.files(FOLDER,basename(FOLDER),full=TRUE)
 
 ###_* calculation of correlations
 allcor <- do.call(rbind,lapply(runs,function(x) {
-  gcor <- read.G(file.path(x,"G_FACTOR.TXT"))
-  data.frame(run=basename(x),
-             pairs=names(gcor),
-             G=gcor,
-             F=read.F(file.path(x,"F_FACTOR.TXT"))[names(gcor)])
+  tryCatch({
+    gcor <- read.G(file.path(x,"G_FACTOR.TXT"))
+    data.frame(run=basename(x),
+               pairs=names(gcor),
+               G=gcor,
+               F=read.F(file.path(x,"F_FACTOR.TXT"))[names(gcor)])
+  },error=function(e) NULL)
 }))
 mg <- merge(allcor,simgrid,,1,0,all=TRUE)
 write.table(mg,file.path(FOLDER,"Allplots","mutual-correlations.txt"),

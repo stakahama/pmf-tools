@@ -8,30 +8,28 @@
 
 ## CalMex
 
-FOLDER <- "runs/ACSM12"
-nFactors <- 3:4 #2:4
-FPEAK <- c(-.2,.2)#round(seq(-1.2,0),2) # -0.6
-Seeds <- c(1,10,100)
-newsim <- FALSE
-dbname <- "/Users/stakahama/Documents/Work/UCSD/projects/CalMex/programs/acsm-class/allspec_2011-03-12.db"
-runno <- 10
+## FOLDER <- "runs/ACSM12"
+## nFactors <- 2
+## FPEAK <- c(-.8,-.4)
+## Seeds <- c(1,10,100)
 
 ## FOLDER <- "runs/ACSM09"
 ## nFactors <- 3
 ## FPEAK <- 0
 ## Seeds <- 1
-## newsim <- TRUE
 
 ## FOLDER <- "runs/FTIR03"
 ## nFactors <- c(3:5)
 ## FPEAK <- round(seq(-1.2,1.2,.6),2)
 ## Seeds <- c(1,10,100)
 ## newsim <- TRUE
-## dbpath <- "/Users/stakahama/Documents/Work/UCSD/projects/CalMex/programs/ftir-class/dbfiles/ftir-refspec.db"
-## runno <- 18
+
+FOLDER <- "runs/FTIR04"
+nFactors <- 4
+FPEAK <- c(-1.8,1.8)
+Seeds <- c(1,10,100)
 
 ## FOLDER <- "runs/532_091125014_p1"
 ## nFactors <- 2:3
 ## FPEAK <- c(-1.2,-0.6,0,0.6,1.2)
 ## Seeds <- c(1,100)
-## newsim <- TRUE

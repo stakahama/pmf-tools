@@ -8,6 +8,11 @@ source("functions/classify.r")
 
 source("userinputs.r")
 
+Arg <- tail(commandArgs(),1)
+runno <- as.integer(Arg)
+if( is.na(runno) )
+  stop("enter run number as integer")
+
 trymkdir <- function(x)
   if(!file.exists(x)) dir.create(x)
 
@@ -60,7 +65,7 @@ for( ngrps in nFactors ) {
 
   grps <- cutree(hc,k = ngrps)
   write.table(data.frame(sample=names(grps),cluster=grps),
-              file.path(clusterout,sprintf("pmf-%s-%d-clusters.txt",basename(runnum(runno)),ngrps)),
+              file.path(clusterout,sprintf("%s-%d-pmf-clusters.txt",basename(runnum(runno)),ngrps)),
               sep="\t",row.names=FALSE,quote=FALSE)
 
 ###_ c. plot it
@@ -107,7 +112,7 @@ for( ngrps in nFactors ) {
     grid.layout(1,2,widths=unit(c(.3,.7),"null"))
 
   trellis.device(png,file=file.path(clusterpath,
-                       sprintf("pmf-%s-%d-clusters.png",basename(runnum(runno)),ngrps)),
+                       sprintf("%s-%d-pmf-clusters.png",basename(runnum(runno)),ngrps)),
                  width=10*96,height=5*96)
   grid.newpage()
   pushViewport(viewport(layout=grlayout))

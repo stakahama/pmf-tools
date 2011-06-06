@@ -10,6 +10,11 @@ source("userinputs.r")
 source("functions/classify.r")
 source("functions/imageplots.r")
 
+Arg <- tail(commandArgs(),1)
+runno <- as.integer(Arg)
+if( is.na(runno) )
+  stop("enter run number as integer")
+
 solution <- runnum(runno)
 
 wn <- scan(file.path(FOLDER,"variables.txt"),quiet=TRUE)

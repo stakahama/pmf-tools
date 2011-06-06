@@ -2,6 +2,7 @@
 library(RSQLite)
 source("functions/classify.r")
 source("userinputs.r")
+source("acsm-userinputs.r")
 ## inputs: FOLDER, dbname
 
 if(!exists("dbname")) dbname <- "dbfiles/acsm-refspec.db"
@@ -128,9 +129,12 @@ dfr <- cbind(dfr,simgrid[dfr$sim,])
 dfr$Class <- OAclass(dfr$match)
 dfr <- within(dfr,{
   nFactors <- factor(nFactors)
-  FPEAK <- factor(FPEAK)  
+  ## FPEAK <- factor(FPEAK)  
   Seed <- factor(Seed)
 })
+write.table(`rownames<-`(dfr[,-(1:2)],dfr$factor),
+            file.path(FOLDER,"Allplots/PMF-matches.txt"),
+            sep="\t",col.names=NA,quote=FALSE)
 
 ##
 out <- xyplot(r~FPEAK | nFactors*Seed, groups=Class,data=dfr,
@@ -157,6 +161,7 @@ long <- melt(wide,id.var=c("sim",names(simgrid)),variable_name="Class")
 
 mycol <- brewer.pal(max(long$value)+1,"Blues")
 ## mycol[1] <- rgb(1,1,1)
+long$FPEAK <- factor(long$FPEAK)
 out <- levelplot(value ~ FPEAK+Class | nFactors*Seed, data=long,
                  scales=list(x=list(rot=90)),
                  at=-1:max(long$value)+.5,

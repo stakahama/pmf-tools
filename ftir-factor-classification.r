@@ -1,6 +1,7 @@
 ###_* library
 source("functions/classify.r")
 source("userinputs.r")
+source("ftir-inputs.r")
 
 if(!exists("dbname")) dbname <- "dbfiles/ftir-refspec.db"
 
@@ -52,7 +53,8 @@ correlations <- structure(vector("list",length(sims)),names=sims)
 pdf(file.path(FOLDER,"Allplots","db-factor-matches.pdf"))
 for( g in sims ) {
   runno <- as.integer(sub(".+\\_([0-9])","\\1",g))
-  X <- as.matrix(read.table(file.path(runnum(runno),"F_FACTOR.TXT")))
+  X <- try(as.matrix(read.table(file.path(runnum(runno),"F_FACTOR.TXT"))))
+  if( !is.matrix(X) ) next()
   samples <- sprintf("%s-%02d",basename(runnum(runno)),1:nrow(X))
   vars <- scan(file.path(FOLDER,"variables.txt"),0,quiet=TRUE)
   ## dimnames(X) <- list(samples,sprintf("mz%d",vars))
@@ -105,7 +107,7 @@ library(latticeExtra)
 library(reshape)
 library(RColorBrewer)
 
-dfr <- do.call(rbind,Map(function(x,y) 
+dfr <- do.call(rbind,Map(function(x,y) if(is.null(x)) NULL else
                          data.frame(sim=y,factor=names(x),
                                     r=c(unlist(x)),
                                     match=sapply(x,names)),

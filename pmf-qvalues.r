@@ -51,7 +51,6 @@ library(lattice)
 simgrid$`Q-ratio` <- vals[rownames(simgrid)]/eqm(simgrid$nFactors)
 for( var in c("nFactors","Seed") )
   simgrid[,var] <- factor(simgrid[,var])
-simgrid$FPEAK <- factor(round(simgrid$FPEAK,2))
 
 panel <- function(...) {
   panel.abline(h=0,col=8)
@@ -79,6 +78,7 @@ panel <- function(x,y,...,pch,groups,subscripts) {
   tryCatch(panel.lines(smooth.spline(x,y)),error=function(e) panel.lmline(x,y))
 }
 
+simgrid$FPEAK <- factor(round(simgrid$FPEAK,2))
 mykey <- with(simgrid,{
   p <- trellis.par.get("superpose.symbol")
   dfr <- rbind(data.frame(lab=paste("Seed =",levels(Seed)),col=p$col[1:nlevels(Seed)],pch=1),
