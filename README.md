@@ -1,3 +1,8 @@
+PMF Tools
+===
+
+[![DOI](https://zenodo.org/badge/19334/stakahama/pmf-tools.svg)](https://zenodo.org/badge/latestdoi/19334/stakahama/pmf-tools)
+
 These set of scripts have been used for PMF analysis of FTIR, STXM-NEXAFS, and ACSM spectra. Provided are scripts for running PMF and visualizing outputs (factor profiles, explained variation, Q-values, correlations in factor strengths/contributions). There are additional scripts provided for cluster analysis and visualization on the same data matrix using the Ward algorithm (Ward, 1963) implemented in R. Additional scripts for fixed-size moving window analysis and visualization of residual element correlations for FTIR data sets are included.
 
 The primary requirements are matrix.dat, std_dev.dat, samples.txt, and variables.txt; helper functions to generate these matrices are provided for some measurement types.
