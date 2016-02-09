@@ -114,9 +114,9 @@ execPMF <- function(i,x) {
   ## I do not save MISC.TXT since it is huge
   nms <- rownames(x)[i]
   try(dir.create(nms),TRUE)
-  invisible(sapply(c("G_FACTOR.TXT","F_FACTOR.TXT"),
-                   function(x) file.copy(x,file.path(nms,x),
-                                         overwrite=TRUE)))
+  for(x in c("G_FACTOR.TXT","F_FACTOR.TXT","MYPMF.INI")) {
+    file.copy(x,file.path(nms,x),overwrite=TRUE)
+  }
   cat(output,sep="\n",file=file.path(nms,"output.txt"))
   return(NULL)
 }

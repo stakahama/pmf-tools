@@ -18,9 +18,9 @@ copy PMF_CD/PMFx/Exampl_2/pmf2def.ini to C:/PMF/
 In Windows (on PC or as virtual machine):
 - install R, add C:\Program Files\R\R-x.xx\bin to Environment Path
 
-In either Windows (guest) or Mac/Linux OS (host):
-- edit userinputs.r
-- place input matrices and vector definitions in runs/FOLDER/
+In either Windows (guest) or Mac/Linux OS (host), create FOLDER/ which includes:
+- userinputs.json containing variables: {nFactors, FPEAK, Seeds}
+- input matrices (matrix.dat and std_dev.dat) and vectors (samples.txt and variables.txt)
 
 In Windows:
 - open DOS terminal in Windows
