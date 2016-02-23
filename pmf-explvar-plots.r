@@ -7,8 +7,16 @@
 ####################
 
 ###_* command-line arguments
-Arg <- tail(commandArgs(),1)
-if( Arg=="--args" || Arg=="1" ) {
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+flag <- if(is.na(argv[2])) "1" else "2"
+
+if( flag=="1" ) {
   FILENAME <- "ExplainedVariation.txt"
   OUTFILE <- "ExplainedVariation-nFactors.pdf"
 } else {
@@ -17,7 +25,9 @@ if( Arg=="--args" || Arg=="1" ) {
 }
 
 ###_* user inputs
-source("userinputs.r")
+argv <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
 
 ###_* single
 

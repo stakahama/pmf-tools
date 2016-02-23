@@ -6,14 +6,25 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
-source("userinputs.r")
-source("functions/classify.r")
-source("functions/imageplots.r")
 
-Arg <- tail(commandArgs(),1)
-runno <- as.integer(Arg)
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+runno <- as.integer(argv[2])
+
 if( is.na(runno) )
   stop("enter run number as integer")
+
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
+
+source("functions/classify.r")
+source("functions/imageplots.r")
 
 solution <- runnum(runno)
 

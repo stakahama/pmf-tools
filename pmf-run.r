@@ -6,26 +6,31 @@
 ## Satoshi Takahama (satoshi.takahama@epfl.ch)
 ####################
 
-library(RJSIONIO)
-
 ## inputs:
-filename <- commandArgs(TRUE)
-args <- fromJSON(filename)
-if(is.null(args[["FOLDER"]]))
-  args[["FOLDER"]] <- path.expand(dirname(filename))
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+
+## contents
+args <- read.args(filename)
 
 #######################################################
 # output : lots of files
 #######################################################
-source("functions/Rfuncs.r")
+source(file.path(srcpath,"functions/Rfuncs.r"))
 
 ## construct $X$, $\sigma$ ** (many options)
 X <- as.matrix(read.table(file.path(args[["FOLDER"]],"matrix.dat")))
 Xstdev <- as.matrix(read.table(file.path(args[["FOLDER"]],"std_dev.dat")))
 
 ## set up grid
-newsim <- (if(file.exists(file.path(FOLDER,"simgrid.txt"))) FALSE else TRUE)
-simgrid <- with(args,creategrid(nFactors,FPEAK,Seeds,newsim))
+if(is.null(args[["newsim"]]))
+  args[["newsim"]] <- TRUE
+simgrid <- with(args,creategrid(nFactors,FPEAK,Seed,FOLDER,newsim))
 
 ## (this is a function which requires nFactors and FPEAK)
 ## also make sure $X$ is created and exists in global space
@@ -39,15 +44,11 @@ homedir <- getwd()
 
   ## write $X$, $\sigma$, and simgrid
   if( basename(getwd()) != args[["FOLDER"]] ) {
-    try(dir.create(args[["FOLDER"]]),TRUE)
+    if(!file.exists(args[["FOLDER"]])) dir.create(args[["FOLDER"]])
     try(setwd(args[["FOLDER"]]),TRUE)
   }
-  if(newsim) {
-    write.table(simgrid,file="simgrid.txt",sep="\t",col=NA,quote=FALSE)  
-  } else {
-    write.table(simgrid,file="simgrid.txt",sep="\t",col=FALSE,quote=FALSE,
-                append=TRUE)
-  }
+  write.table(simgrid,file="simgrid.txt",sep="\t",col=NA,quote=FALSE,
+              append=if(args[["newsim"]]) FALSE else TRUE)  
 
   ##run
   for(x in split(simgrid,simgrid$nFactors)) {

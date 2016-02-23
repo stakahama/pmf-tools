@@ -1,11 +1,25 @@
 ###_1. load libraries
-library(reshape)
+
+## inputs:
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+
+## contents
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
+
+library(reshape2)
 library(lattice)
 library(grid)
 library(gridBase)
-source("functions/color-dendrogram.r")
+source(file.path(srcpath,"functions/color-dendrogram.r"))
 
-source("userinputs.r")
 
 trymkdir <- function(x)
   if(!file.exists(x)) dir.create(x)

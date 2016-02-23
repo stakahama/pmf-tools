@@ -6,7 +6,20 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
-source("userinputs.r")
+
+## inputs:
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+
+## contents
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
 
 #########################################
 # output: PercentInfo.pdf

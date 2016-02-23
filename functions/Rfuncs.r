@@ -8,13 +8,13 @@
 
 
 ## make simgrid
-creategrid <- function(nFactors,FPEAK,Seeds,newsim) {
-  gr <- unique(expand.grid(nFactors=nFactors,FPEAK=FPEAK,Seed=Seeds))
+creategrid <- function(nFactors,FPEAK,Seed,FOLDER,newsim) {
+  gr <- unique(expand.grid(nFactors=nFactors,FPEAK=FPEAK,Seed=Seed))
   if(newsim) {
     mx <- 0
   } else {
     if(file.exists(file.path(FOLDER,"simgrid.txt"))) {
-      patt <- sprintf("%s\\_([0-9]+)",basename(FOLDER))
+      patt <- "soln\\_([0-9]+)"
       simgrid <- read.delim(file.path(FOLDER,"simgrid.txt"),row.names=1,
                             colClasses=c("character","integer","numeric","numeric"))
       gr <- gr[!do.call(paste,gr) %in% do.call(paste,simgrid),]
@@ -24,8 +24,7 @@ creategrid <- function(nFactors,FPEAK,Seeds,newsim) {
     }
   }
   gr <- gr[with(gr,order(nFactors,FPEAK,Seed)),]  
-  rownames(gr) <- paste(basename(FOLDER),
-                        substring(1000+mx+(1:nrow(gr)),2),sep="_")
+  rownames(gr) <- sprintf("soln_%s",substring(1000+mx+(1:nrow(gr)),2))
   gr
 }
 

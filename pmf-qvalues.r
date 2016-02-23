@@ -6,10 +6,25 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
+options(stringsAsFactors=FALSE)
 
 ###_* command-line arguments
-Arg <- tail(commandArgs(),1)
-if( Arg=="--args" || Arg=="1" ) {
+## inputs:
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+flag <- if(is.na(argv[2])) "1" else "2"
+
+## contents
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
+
+if( flag=="1" ) {
   CHI2 <- "final"
   OUTFILE1 <- "Qvalues-FPEAK.pdf"
   OUTFILE2 <- "Qvalues-nFactors.pdf"
@@ -22,7 +37,6 @@ if( Arg=="--args" || Arg=="1" ) {
 ###_* read simgrid
 
 ###_ . inputs
-source("userinputs.r")
 simgrid <- read.delim(file.path(FOLDER,"simgrid.txt"),row.names=1,as.is=TRUE)
 simgrid <- simgrid[with(simgrid,order(nFactors,FPEAK,Seed)),]
 dir.create(file.path(FOLDER,"Allplots"))

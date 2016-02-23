@@ -1,5 +1,20 @@
 ###_* libraries and functions
-library(reshape)
+
+## inputs:
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+
+## contents
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
+
+## library(reshape)
 library(latticeExtra)
 library(lattice)
 
@@ -22,7 +37,6 @@ normalize <- function(x)
 
 ###_* inputs
 
-source("userinputs.r")
 fi <- list.files(FOLDER,"F_FACTOR.TXT",rec=TRUE,full=TRUE)
 mat <- do.call(rbind,Map(read.F,fi))
 colnames(mat) <- readLines(file.path(FOLDER,"variables.txt"))

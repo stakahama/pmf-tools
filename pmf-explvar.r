@@ -10,8 +10,17 @@
 ## explained variance
 
 ###_* command-line arguments
-Arg <- tail(commandArgs(),1)
-if( Arg=="--args" || Arg=="1" ) {
+## inputs:
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+flag <- if(is.na(argv[2])) "1" else "2"
+
+if( flag=="1" ) {
   FILENAME <- "ExplainedVariation.txt"
   FN <- quote(ExplainedVariation)
 } else {
@@ -20,8 +29,12 @@ if( Arg=="--args" || Arg=="1" ) {
 }
 
 ###_* import
-source("userinputs.r")
-source("functions/harvest.r")
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
+
+
+source(file.path(srcpath,"functions/harvest.r"))
 patt <- ".+\\_([0-9]{3})"
 
 ###_* volumes
@@ -84,7 +97,7 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
   evg <- ExplainedVariation(soln$G,soln$F,stdev,eij)
 
   if(export)
-    write.table(evg,file=file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),runno),
+    write.table(evg,file=file.path(FOLDER,sprintf("soln_%s",runno),
                   FILENAME),
             sep="\t",quote=FALSE)
   evg
@@ -93,9 +106,9 @@ calcEV <- function(runno,FOLDER,export=TRUE) {
 runno <- sub(patt,"\\1",list.files(FOLDER,patt))
 
 for( x in runno ) {
-  if(!newsim &&
-     file.exists(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),x),
-                           FILENAME))) next()
+  ## if(!newsim &&
+  ##    file.exists(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),x),
+  ##                          FILENAME))) next()
   tryCatch({
     calcEV(x,FOLDER)
     print(x)

@@ -8,20 +8,31 @@
 
 
 ## input:
-source("userinputs.r")
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
+
+source(file.path(srcpath,"functions/ftir-factorplots.r"))
 patt <- ".+\\_([0-9]{3})\\.pdf"
 ######################################################
 # output: Allplots/Allplots.pdf
 ######################################################
-homedir <- getwd()
 setwd(FOLDER)
 
 # post-process
-try(dir.create("Allplots"),TRUE)
+dir.create("Allplots")
 ## source(file.path(homedir,"functions/results_template.r"))
 ## lapply(c("Qvalues.pdf","Gmedian.pdf"),
 ##        function(x) file.rename(x,file.path("Allplots",x)))
-source(file.path(homedir,"functions/ftir-factorplots.r"))
+
 setwd("Allplots")
 try({
   projpdf <- list.files(".",patt=patt)
@@ -33,4 +44,4 @@ try({
   output <- system(paste(cmd,collapse=" "),intern=TRUE)
   lapply(pdfSeq,file.remove)
 })
-setwd(homedir)
+

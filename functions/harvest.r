@@ -12,7 +12,7 @@
 funcall <- function(FUN,...) FUN(...)
 
 getsoln <- function(FOLDER,solution) {
-  path <- unique(file.path(FOLDER,sprintf("%s_%s",basename(FOLDER),solution)))
+  path <- unique(file.path(FOLDER,sprintf("soln_%s",solution)))
   g <- funcall(function(p) {
     samples <- readLines(file.path(dirname(p),"samples.txt"))
     g <- as.matrix(read.table(file.path(p,"G_FACTOR.TXT")))

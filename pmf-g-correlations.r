@@ -6,12 +6,23 @@
 ## Satoshi Takahama (stakahama@ucsd.edu)
 ####################
 
+
+###_* user inputs
+input <- commandArgs()
+pattern <- "--file=(.+)"
+srcpath <- gsub('~+~'," ",dirname(sub(pattern,"\\1",input[grepl(pattern,input)])),fixed=TRUE)
+source(file.path(srcpath,"functions/io.R"))
+
+argv <- tail(input,-grep("--args",input,fixed=TRUE))
+filename <- argv[1]
+
 ###_* libraries
 library(lattice)
 library(latticeExtra)
 
-###_* user inputs
-source("userinputs.r")
+args <- read.args(filename)
+for(p in names(args))
+  assign(p,args[[p]])
 
 ###_* functions
 read.G <- function(FOLDER,run) {
