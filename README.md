@@ -27,8 +27,8 @@ In either Windows (guest) or Mac/Linux OS (host), create FOLDER/ which includes:
 - a .json file containing variables {nFactors, FPEAK, Seed}. Example:
 
         {
-		  "nFactors":[2,3,4,5]
-		  "FPEAK":[-1.8,0.2,1.8]
+		  "nFactors":[2,3,4,5],
+		  "FPEAK":[-1.8,0.2,1.8],
 		  "Seed":[1,10,100]
 	    }
 		  
