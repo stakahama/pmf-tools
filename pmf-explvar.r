@@ -29,7 +29,7 @@ if( flag=="1" ) {
 }
 
 ###_* import
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 

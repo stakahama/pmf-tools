@@ -20,7 +20,7 @@ filename <- argv[1]
 library(lattice)
 library(latticeExtra)
 
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 

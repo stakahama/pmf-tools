@@ -10,7 +10,7 @@ argv <- tail(input,-grep("--args",input,fixed=TRUE))
 filename <- argv[1]
 
 ## contents
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 
@@ -28,7 +28,7 @@ specpanel <- function(x,y,..., samples, groups,subscripts) {
 read.F <- function(x) {
   run <- basename(dirname(x))
   ff <- as.matrix(read.table(x))
-  rownames(ff) <- sprintf("%s-%03d",run,1:nrow(ff))
+  rownames(ff) <- sprintf("%s-%02d",run,1:nrow(ff))
   ff
 }
 
@@ -49,19 +49,20 @@ hc <- hclust(dist(mat))
 ###_* trim tree, long data form
 
 ngrps <- max(nFactors)
-grps <- cutree(hc,k=ngrps)
-numFac <- with(list(x=sub("-[0-9]+$","",rownames(mat))),
-               table(x)[x])
+grp <- cutree(hc,k=ngrps)
+numFac <- with(list(x=sub("-[0-9]+$","",rownames(mat))), table(x)[x])
 longspec <- data.frame(numFac=factor(rep(numFac,ncol(mat))),
-                       grps=factor(rep(grps,ncol(mat))),
-                       samples=rep(rownames(mat),ncol(mat)),
+                       grp=factor(rep(grp,ncol(mat))),
+                       comp=rep(rownames(mat),ncol(mat)),
                        variable=rep(as.numeric(colnames(mat)),each=nrow(mat)),
                        value=c(mat))
 
 ###_* plot
-mycolors <- structure(rainbow(max(grps)),names=seq_len(max(grps)))
-specplot <- xyplot(value ~ variable | grps*numFac, groups=grps, data=longspec,
-                   panel=specpanel, samples=longspec$samples,
+
+mycolors <- with(list(n=nlevels(longspec$grp)),
+                 setNames(rainbow(n),seq(n)))
+specplot <- xyplot(value ~ variable | grp*numFac, groups=grp, data=longspec,
+                   panel=specpanel, samples=longspec$comp,
                    type="l", as.table=TRUE,
                    par.settings=list(superpose.line=list(col=mycolors)),
                    xlim=c(4000,1000),
@@ -72,3 +73,11 @@ pdf(file.path(FOLDER,"Allplots",sprintf("factors-%d-clusters.pdf",ngrps)),
     width=8,height=5)
 print(useOuterStrips(specplot))
 dev.off()
+
+###_* export
+
+write.table(convertFactor(longspec[,c("comp","grp")], 2),
+            file.path(FOLDER, "Allplots", sprintf("factors-%d-clusters.txt", ngrps)),
+            sep="\t", row.names=FALSE)
+
+

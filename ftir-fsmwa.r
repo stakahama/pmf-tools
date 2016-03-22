@@ -17,7 +17,7 @@ argv <- tail(input,-grep("--args",input,fixed=TRUE))
 filename <- argv[1]
 
 ## contents
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 

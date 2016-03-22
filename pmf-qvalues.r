@@ -20,7 +20,7 @@ filename <- argv[1]
 flag <- if(is.na(argv[2])) "1" else "2"
 
 ## contents
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 

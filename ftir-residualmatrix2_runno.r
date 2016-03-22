@@ -23,7 +23,7 @@ runno <- as.integer(argv[2])
 if( is.na(runno) )
   stop("enter run number as integer")
 
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 

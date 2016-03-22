@@ -25,7 +25,7 @@ if( flag=="1" ) {
 }
 
 ###_* user inputs
-argv <- read.args(filename)
+argv <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 

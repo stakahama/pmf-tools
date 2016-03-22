@@ -16,7 +16,7 @@ source(file.path(srcpath,"functions/io.R"))
 argv <- tail(input,-grep("--args",input,fixed=TRUE))
 filename <- argv[1]
 
-args <- read.args(filename)
+args <- readArgs(filename)
 for(p in names(args))
   assign(p,args[[p]])
 
